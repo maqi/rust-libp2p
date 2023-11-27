@@ -175,13 +175,26 @@ impl ClosestPeersIter {
             },
         }
 
+        // Getting the current close range. As `self.closeset_peers` is ordered,
+        // the distance of the `self.config.num_results`th one shall be the boundary.
+        let mut cur_range = distance;
+        let mut index = 0;
+        for (dist, _state) in self.closest_peers.iter() {
+            if index < self.config.num_results.get() {
+                index += 1;
+                cur_range = *dist;
+            } else {
+                break;
+            }
+        }
+
         // Incorporate the reported closer peers into the iterator.
         //
         // The iterator makes progress if:
         //     1, the iterator did not yet accumulate enough closest peers.
         //   OR
-        //     2, any of the new peers is closer to the target than any peer seen so far
-        //        (i.e. is the first entry after being incorporated)
+        //     2, any of the new peers is among the `num_results` closest peers
+        //        to the target seen so far.
         let mut progress = self.closest_peers.len() < self.config.num_results.get();
         for peer in closer_peers {
             let key = peer.into();
@@ -192,7 +205,7 @@ impl ClosestPeersIter {
             };
             self.closest_peers.entry(distance).or_insert(peer);
 
-            progress = self.closest_peers.keys().next() == Some(&distance) || progress;
+            progress = distance < cur_range || progress;
         }
 
         // Update the iterator state.

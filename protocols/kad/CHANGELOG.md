@@ -2,6 +2,8 @@
 
 - The progress of the close query iterator shall be decided by ANY of the new peers.
   See [PR 4932](https://github.com/libp2p/rust-libp2p/pull/4932).
+- Close progress whenever closer in range, instead of having to be the closest.
+  See [PR 4934](https://github.com/libp2p/rust-libp2p/pull/4934).
 
 ## 0.45.2
 
