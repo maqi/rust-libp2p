@@ -67,7 +67,7 @@ pub use behaviour::{
     Behaviour, BucketInserts, Caching, Config, Event, ProgressStep, Quorum, StoreInserts,
 };
 pub use kbucket::{
-    Distance as KBucketDistance, EntryView, KBucketRef, Key as KBucketKey, NodeStatus,
+    Distance as KBucketDistance, EntryView, KBucketRef, Key as KBucketKey, NodeStatus, U256,
 };
 pub use protocol::ConnectionType;
 pub use query::QueryId;
