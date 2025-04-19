@@ -1203,12 +1203,33 @@ where
         let local_id = self.kbuckets.local_key().preimage();
         let others_iter = peers.filter(|p| &p.node_id != local_id);
         if let Some(query) = self.queries.get_mut(query_id) {
+            let target_key = match &query.info {
+                QueryInfo::Bootstrap { peer, .. } => {
+                    kbucket::Key::from(kbucket::Key::from(*peer).hashed_bytes().to_vec())
+                }
+                QueryInfo::GetClosestPeers { key, .. } => kbucket::Key::from(key.clone()),
+                QueryInfo::GetProviders { key, .. }
+                | QueryInfo::AddProvider { key, .. }
+                | QueryInfo::GetRecord { key, .. } => {
+                    kbucket::Key::from(kbucket::Key::from(key.clone()).hashed_bytes().to_vec())
+                }
+                QueryInfo::PutRecord { record, .. } => kbucket::Key::from(
+                    kbucket::Key::from(record.key.clone())
+                        .hashed_bytes()
+                        .to_vec(),
+                ),
+            };
+
             tracing::trace!(peer=%source, query=?query_id, "Request to peer in query succeeded");
             for peer in others_iter.clone() {
+                let peer_key = kbucket::Key::from(peer.node_id);
+                let d = target_key.distance(&peer_key);
                 tracing::trace!(
                     ?peer,
                     %source,
                     query=?query_id,
+                    distanct=?d,
+                    distanct_ilog2=?d.ilog2(),
                     "Peer reported by source in query"
                 );
                 let addrs = peer.multiaddrs.iter().cloned().collect();
