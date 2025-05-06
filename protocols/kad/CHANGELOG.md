@@ -14,6 +14,8 @@
   See [PR 5715](https://github.com/libp2p/rust-libp2p/pull/5715).
 - Remove deprecated default constructor for `ProtocolConfig`.
   See [PR 5774](https://github.com/libp2p/rust-libp2p/pull/5774).
+- Configurable outbound_substreams_timeout.
+  See [PR 6015](https://github.com/libp2p/rust-libp2p/pull/6015).
 
 <!-- Update to libp2p-core v0.43.0 -->
 
