@@ -66,7 +66,7 @@ mod codec {
     impl<Req, Resp> Default for Codec<Req, Resp> {
         fn default() -> Self {
             Codec {
-                request_size_maximum: 1024 * 1024,
+                request_size_maximum: 10 * 1024 * 1024,
                 response_size_maximum: 10 * 1024 * 1024,
                 phantom: PhantomData,
             }
